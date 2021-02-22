@@ -1,0 +1,45 @@
+.animated-modal {
+  border-radius: 4px;
+  overflow: hidden;
+  
+  transform: translateY(-50px);
+  transition: all .7s;
+}
+
+.animated-modal h2,
+.animated-modal button,
+.animated-modal input,
+.animated-modal p {
+  transform: translateY(-50px);
+  opacity: 0;
+  
+  transition-property: transform, opacity;
+  transition-duration: .4s;
+}
+
+/* Final state */
+.fancybox-slide--current .animated-modal,
+.fancybox-slide--current .animated-modal h2,
+.fancybox-slide--current .animated-modal button,
+.fancybox-slide--current .animated-modal input,
+.fancybox-slide--current .animated-modal p {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Reveal content with different delays */
+.fancybox-slide--current .animated-modal h2 {
+  transition-delay: .1s;
+}
+
+.fancybox-slide--current .animated-modal p {
+  transition-delay: .2s;
+}
+
+.fancybox-slide--current .animated-modal input {
+  transition-delay: .3s;
+}
+
+.fancybox-slide--current .animated-modal button {
+  transition-delay: .4s;
+}
