@@ -27,42 +27,6 @@ export default new Vuex.Store({
 	  	},
 	},
 	actions: {
-		
-	  	// login({commit}, admin){
-	    //     return new Promise((resolve, reject) => {
-	    //         commit('auth_request')
-      //         const config = {
-      //           headers: {
-      //             "Content-Type": "application/x-www-form-urlencoded",
-      //           },
-      //         };
-			//   const auth = {
-			// 	auth: {
-			// 		username: process.env.VUE_APP_BASIC_AUTH_USERNAME, 
-			// 		password: process.env.VUE_APP_BASIC_AUTH_PASSWORD
-			// 	}
-			//   }
-			//   axios.post('/admin/login', admin, auth) //shorthand
-	    //         .then(response => {
-			// 		const token = response.data.data.accessToken
-	    //             commit('auth_success', token)
-	    //             localStorage.setItem('Authorization', token)
-	    //             axios.defaults.headers.common['Authorization'] = token
-	    //             resolve(response)
-	    //         })
-	    //         .catch(err => {
-			// 		if (err.response.data[0]) {
-			// 			console.log(err.response.data[0].message)
-			// 		} else {
-			// 			console.log(err.response)
-			// 		}
-	    //             commit('auth_error')
-	    //             localStorage.removeItem('Authorization')
-	    //             reject(err)
-	    //         })
-	    //     })
-	    // },
-
 		//User
 		login({commit}, user){
 	        return new Promise((resolve, reject) => {
@@ -80,14 +44,22 @@ export default new Vuex.Store({
 			  }
 			  axios.post('/user/login', user, auth) //shorthand
 	            .then(response => {
+
 					const token = response.data.data.accessToken
-	                axios.defaults.headers.common['Authorization'] = token
-	                localStorage.setItem('Authorization', token)
-	                const logged = response.data
-                  console.log(logged)
 	                commit('auth_success', token)
+	                localStorage.setItem('Authorization', token)
+	                axios.defaults.headers.common['Authorization'] = token
 					setTimeout(resolve(response), 3000)
-	                resolve(response)
+	                // resolve(response)
+
+				// 	const token = response.data.data.accessToken
+	            //     localStorage.setItem('Authorization', token)
+	            //     axios.defaults.headers.common['Authorization'] = token
+	            //     const logged = response.data
+                //   console.log(logged)
+	            //     commit('auth_success', token)
+				// 	setTimeout(resolve(response), 3000)
+	            //     resolve(response)
 	            })
 	            .catch(err => {
 					if (err.response.data[0]) {

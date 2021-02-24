@@ -35,7 +35,9 @@ if (token) {
   Vue.prototype.$http.defaults.headers.common['Authorization'] = token
   axios.defaults.headers.common['Authorization'] = token
   axios.defaults.headers.common['x-access-token'] = token
-} 
+} else {
+  router.push('/login')
+}
 
 require('dotenv').config();
 

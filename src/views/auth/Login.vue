@@ -36,58 +36,85 @@
                 </form>
             </div>
         </div>
+
+        <b-toast id="my-toast" :variant="toastVariant" solid>
+            <template #toast-title>
+              <div class="d-flex flex-grow-1 align-items-baseline">
+                <b-img blank blank-color="#ff5555" class="mr-2" width="12" height="12"></b-img>
+                <strong class="mr-auto">{{toastTitle}}</strong>
+                <small class="text-muted mr-2">{{time}} seconds ago</small>
+              </div>
+            </template>
+            <b>{{toastMessage}}</b>
+        </b-toast>
     </div>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
     data() {
         return {
             email: '',
             password: '',
             passwordFieldType: 'password',
-            icon: 'eye'
+            icon: 'eye',
+
+            //buat toastnya
+            date: moment(0),
+            toastTitle: '',
+            toastMessage: '',
+            toastVariant: ''
         }
     },
     methods: {
         login() {   
+            this.date = moment(0)
             let email = this.email 
             let password = this.password
             this.$store.dispatch('login', { email, password })
             .then(response => {
                 // Buat Toast
-                let successMessage = 'Selamat Datang~'
-                const titleSuccess = response.data.message
-                this.makeToast('success', titleSuccess, successMessage)
+                this.toastVariant = 'success'
+                this.toastMessage = 'Selamat Datang~'
+                this.toastTitle = response.data.message
+                this.$bvToast.show('my-toast')
 
                 setTimeout(() => {
                     this.$router.push('/')
                 }, 2000);
             })
             .catch(err => {
-                    const titleError = 'Terdapat Kesalahan'
+                    this.$bvToast.show('my-toast')
+                    this.toastVariant = 'danger'
+                    this.toastTitle = 'Terdapat Kesalahan'
                     if (err.response.data[0]) {
-                        let errorMessage = err.response.data[0].message
-                        this.makeToast('danger', titleError, errorMessage)
-					} else {
-                        let errorMessage = err.response.data.message;
-                        this.makeToast('danger', titleError, errorMessage)
+                        this.toastMessage = err.response.data[0].message
+				    } else {
+                        this.toastMessage = err.response.data.message;
                     }
                 }
             )
         },
-        makeToast(variant = 'default', title, message) {
-            this.$bvToast.toast(message, { //body
-                title: title, //atas
-                variant: variant,
-                solid: true
-            })
-        }, 
         showPassword() {
             this.icon = this.icon === 'eye' ? 'eye-slash' : 'eye'
             this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'
         }
     },
+    computed: {
+        time(){
+            return this.date.format('s');
+        }
+    },
+
+    mounted(){
+  	    var timer = setInterval(() => {
+            this.date = moment(this.date.add(1, 'seconds'));
+            if(this.date.diff(moment(0)) === 60){
+              clearInterval(timer);
+            }
+        }, 1000);
+  }
 }
 </script>
 
@@ -101,6 +128,7 @@ export default {
         height: 100%;
         background-image: url('../../../public/admin/img/bg-login.jpg');
         background-repeat: no-repeat;
+        background-size: cover
     }
     #ioginPanel {
         position: absolute;

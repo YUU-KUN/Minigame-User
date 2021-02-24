@@ -185,7 +185,6 @@ export default {
           currentUser: this.currentUser,
         } 
       })
-      console.log('halo gan');
     },
     setTimeout() {
       setTimeout(this.getWebGame(), 2000)

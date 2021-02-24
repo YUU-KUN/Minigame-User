@@ -86,13 +86,13 @@
                                                               style="margin: 0 10px 0 0; font-size: 16px"
                                                               >{{category}}</span
                                                             > -->
-                                                            <span v-if="detailGame.genre.length > 1">
+                                                            <span v-if="genreLength > 1">
                                                               <span class="badge badge-pill badge-primary" v-for="(genre, index) in detailGame.genre" :key="index" style="margin: 0 10px 0 0; font-size:16px">
                                                                 {{genre}}
                                                               </span>
                                                             </span>
                                                             <span v-else>
-                                                              <span v-for="(gameSplit, index) in detailGame.genre.join(',').split(',')" :key="index">
+                                                              <span v-for="(gameSplit, index) in joinedGenre" :key="index">
                                                                 <span class="badge badge-pill badge-primary" style="margin: 0 10px 0 0; font-size:16px">
                                                                   {{gameSplit}}
                                                                 </span>
@@ -261,12 +261,22 @@
         </div> -->
 
         <!-- ONLY FOR DEVELOPING -->
+        <!-- <div class="card bg-light">
+                <div class="card-header"> <h3>Game Members</h3> </div>
+                  <div class="card-inner">
+                    <div class="card bg-dark">
+                      <div class="card-inner bg-dark">
+                        <pre class="text-warning">{{gameMembers}}</pre>
+                      </div>
+                    </div>
+                </div>
+              </div> -->
           <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>Members</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
                       <div class="card-inner bg-dark">
-                        <pre class="text-warning">{{values}}</pre>
+                        <pre class="text-warning">{{members}}</pre>
                       </div>
                     </div>
                 </div>
@@ -282,7 +292,7 @@
                 </div>
               </div> -->
 
-              <div class="card bg-light">
+              <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>Detail Game</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -291,7 +301,7 @@
                       </div>
                     </div>
                 </div>
-              </div>
+              </div> -->
               
         <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>All Users</h3> </div>
@@ -364,7 +374,7 @@
                                 <!-- <div class="input-container" style="flex-grow: 1;  "> -->
                                     <label for="members"><strong>Members</strong></label>
                                     <!-- <Multiselect v-model="value" :options="options" :multiple="true" group-values="libs" group-label="language" :group-select="true" placeholder="Type to search" track-by="name" label="name"><span slot="noResult">Oops! No elements found. Consider changing the search query.</span></Multiselect> -->
-                                    <multiselect v-model="values" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="name" track-by="username" :options="users" :multiple="true" :taggable="true"></multiselect>
+                                    <multiselect v-model="members" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="name" track-by="username" :options="users" :multiple="true" :taggable="true"></multiselect>
                                     <!-- <pre class="language-json"><code>{{ members}}</code></pre> -->
                                 <!-- </div> -->
                             </div>
@@ -389,12 +399,23 @@
 </div>
 </div>
     </div>
+
+    <b-toast id="my-toast" :variant="toastVariant" solid>
+      <template #toast-title>
+        <div class="d-flex flex-grow-1 align-items-baseline">
+          <b-img blank blank-color="#ff5555" class="mr-2" width="12" height="12"></b-img>
+          <strong class="mr-auto">{{toastTitle}}</strong>
+          <small class="text-muted mr-2">{{countdown}} seconds ago</small>
+        </div>
+      </template>
+      <b>{{toastMessage}}</b>
+    </b-toast>
   </div>
 </template>
 
 <script>
 import Multiselect from 'vue-multiselect'
-
+import moment from 'moment'
 export default {
   components: {
     Multiselect
@@ -403,6 +424,8 @@ export default {
   data() {
     return {
       detailGame: '',
+      genreLength: '',
+      joinedGenre: '',
       gameId: '',
       dateTime: '',
       date: '',
@@ -416,7 +439,15 @@ export default {
         '15:00',
         '19:00',
       ],
-      values: []
+      values: [],
+
+      gameMembers: [], //yang paling betul pake array
+
+      //buat toastnya
+      count: moment(0),
+      toastTitle: '',
+      toastMessage: '',
+      toastVariant: ''
     };
   },
   methods: {
@@ -428,11 +459,29 @@ export default {
     },
     getDetailGame() {
       this.axios.get('/game/detail/'+this.gameId).then(response => {
-        this.detailGame = response.data.data
+        this.detailGame = response.data.data,
+        this.genreLength = this.detailGame.genre.length,
+        this.joinedGenre = this.detailGame.genre.join(',').split(',')
       })
     },
     addToCart() {
       console.log(this.gameId);
+      for (let i = 0; i < this.members.length; i++) {
+        
+          // this.gameMembersName = this.members[i].name;
+          // this.gameMembersId = this.members[i].userId;
+          this.gameMembers[i] = 
+            {
+              name: this.members[i].name,
+              userId: this.members[i].userId,
+            }
+
+      }
+      // for (let i = 0; i < this.members.length; i++) {
+      //   const gameMembersName = this.members[i].name
+      //   const gameMembersId = this.members[i].userId
+      // }
+      this.count = moment(0)
       let headers = {
                 "headers": {
                     "content-type": "application/json",
@@ -441,41 +490,54 @@ export default {
       this.axios.post('/cart/add', {
         dateTime: this.date,
         gameId: this.gameId,
-        members: [
-          { 
-            name: '',
-            userId: '',
-          }
-        ],
+        members: this.gameMembers,
+          // { 
+          //   name: 'Halo Gan',
+          //   userId: 'Ini User Id',
+          // },
+          // { 
+          //   name: this.gameMembersName,
+          //   userId: this.gameMembersId,
+          // }
         time: this.time
       },headers).then(response => {
         console.log(response)
         console.log('Berhasil Menambahkan ke Cart')
-        this.showToast()
+        // Buat Toast
+        this.toastVariant = 'success'
+        this.toastTitle = 'Berhasil!'
+        this.toastMessage = response.data.message
+        this.$bvToast.show('my-toast')
       }).catch(error => {
         console.log(error.response);
+        // Buat Toast
+        this.$bvToast.show('my-toast')
+        this.toastVariant = 'danger'
+        this.toastTitle = 'Terdapat Kesalahan'
+        this.toastMessage = error.response.data.message;
       })
     },
-    showToast() {{
-        this.$bvToast.toast(`Success Adding Game to Cart!`, {
-          title: 'Success',
-          autoHideDelay: 5000,
-        })
-      }
-
-    }
+    // getUserId() {
+    //   this.axios.get('')
+    // },
+    
   },
+  computed: {
+        countdown(){
+            return this.count.format('s');
+        }
+    },
   mounted() {
     this.gameId = this.$route.params.gameId
-
-      if (this.gameId) {
-        console.log(this.gameId);
-      } else {
-        console.log('id game nya kosong gannn');
-      }
-
     this.getDetailGame()
     this.getUsers()
+
+    var timer = setInterval(() => {
+        this.count = moment(this.count.add(1, 'seconds'));
+        if(this.count.diff(moment(0)) === 60){
+          clearInterval(timer);
+        }
+    }, 1000);
     
   },
 };

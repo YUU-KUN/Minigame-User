@@ -7,12 +7,6 @@
                     <h6 class="m-0 font-weight-bold text-primary">Transaksi Anda</h6>
                 </div>
                 <div class="card-body">
-                    <div v-if="info" class="alert alert-success alert-dismissible fade show" role="alert">
-                      <b>{{res}}</b>
-                      <button type="button" @click="setTimeout(closeToast, 3000)" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
@@ -122,23 +116,36 @@
 
         </div>
     </div>
+    
+    <b-toast id="my-toast" :variant="toastVariant" solid>
+      <template #toast-title>
+        <div class="d-flex flex-grow-1 align-items-baseline">
+          <b-img blank blank-color="#ff5555" class="mr-2" width="12" height="12"></b-img>
+          <strong class="mr-auto">{{toastTitle}}</strong>
+          <small class="text-muted mr-2">{{countdown}} seconds ago</small>
+        </div>
+      </template>
+      <b>{{toastMessage}}</b>
+    </b-toast>
     </div>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
     data() {
         return {
             userTransaction: '',
-            removed: false,
-            info: false,
-            res: '',
-
             poster: '',
             posterUrl: '',
-
             buktiPembayaran: '',
             buktiPembayaranUrl: '',
+
+            //buat toastnya
+      		  count: moment(0),
+      		  toastTitle: '',
+      		  toastMessage: '',
+      		  toastVariant: ''
         }
     },
     methods: {
@@ -157,6 +164,7 @@ export default {
         },
 
         uploadPayment(index) {
+          this.count = moment(0)
           let headers = {
                 'headers': {
                     'Content-Type' : 'multipart/form-data',
@@ -168,21 +176,42 @@ export default {
 
           this.axios.put('transaction/upload-bukti/'+transactionID, formData, headers).then(response => {
             console.log(response)
-            this.info = true
-            this.res = "Bukti transaksi berhasil diupload!"
+            // this.info = true
+            // this.notif = "Bukti transaksi berhasil diupload!"
+            
+            // Buat Toast
+        		this.toastVariant = 'success'
+        		this.toastTitle = 'Berhasil!'
+        		this.toastMessage = response.data.message
+        		this.$bvToast.show('my-toast')
+
             this.getUserTransaction()
           }).catch(error => {
             console.log(error);
+            
+            // Buat Toast
+        		this.toastVariant = 'danger'
+        		this.toastTitle = 'Terdapat Kesalahan!'
+        		this.toastMessage = response.data.message
+        		this.$bvToast.show('my-toast')
           })
         },
-        
-        closeToast() {
-          this.info = false 
-        }
 
         
     },
+    computed: {
+        countdown(){
+            return this.count.format('s');
+        }
+    },
     mounted() {
+        var timer = setInterval(() => {
+  	  	    this.count = moment(this.count.add(1, 'seconds'));
+  	  	    if(this.count.diff(moment(0)) === 10){
+  	  	      	clearInterval(timer);
+  	  	    }
+  	  	}, 1000);
+
         this.getUserTransaction()
     }
 }

@@ -37,7 +37,10 @@
 												{{cart.cartGameData.title}}
 											</td>
 											<td>
-												<span v-for="(member, index) in cart.members" :key="index">{{member}}</span>
+												<span v-if="cart.members != ''">
+													<span v-for="(member, index) in cart.members" :key="index"><li>{{member.name}}</li></span>
+												</span>
+												<span v-else>-</span>
 											</td>
 											<td>
 												{{cart.datePlay | formatDate}}
@@ -147,14 +150,37 @@
 					</div>
 				</div>
 			</div> -->
+
+			<!-- <div class="card bg-light">
+                <div class="card-header"> <h3>Members</h3> </div>
+                  <div class="card-inner">
+                    <div class="card bg-dark">
+                      <div class="card-inner bg-dark">
+                        <pre class="text-warning">{{userCart}}</pre>
+                      </div>
+                    </div>
+                </div>
+              </div> -->
 			<!-- ONLY FOR DEVELOPING -->
 
 		</div>
 	</div>
+
+	<b-toast id="my-toast" :variant="toastVariant" solid>
+      <template #toast-title>
+        <div class="d-flex flex-grow-1 align-items-baseline">
+          <b-img blank blank-color="#ff5555" class="mr-2" width="12" height="12"></b-img>
+          <strong class="mr-auto">{{toastTitle}}</strong>
+          <small class="text-muted mr-2">{{countdown}} seconds ago</small>
+        </div>
+      </template>
+      <b>{{toastMessage}}</b>
+    </b-toast>
 </div>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
 	data() {
 		return {
@@ -163,6 +189,12 @@ export default {
 			info: false,
 			cartId: '',
 			cartItemId: '',
+
+			//buat toastnya
+      		count: moment(0),
+      		toastTitle: '',
+      		toastMessage: '',
+      		toastVariant: ''
 		}
 	},
 	methods: {
@@ -173,6 +205,7 @@ export default {
 			})
 		},
 		deleteCart(index) {
+			this.count = moment(0)
 			let headers = {
 				"headers": {
 						"content-type": "application/json",
@@ -182,7 +215,22 @@ export default {
 			this.axios.put('/cart/remove/'+deleleCartId, headers).then(response => {
 				console.log(response)
 				console.log('Berhasil Menghapus Dari Keranjang')
-				this.getCart()
+
+				// Buat Toast
+        		this.toastVariant = 'warning'
+        		this.toastTitle = 'Berhasil!'
+        		this.toastMessage = response.data.message
+        		this.$bvToast.show('my-toast')
+
+				this.getCart() //auto refresh page
+			}).catch(error => {
+				console.log(error.response);
+
+				// Buat Toast
+        		this.toastVariant = 'danger'
+        		this.toastTitle = 'Terdapat Kesalahan!'
+        		this.toastMessage = error.response.data.message
+        		this.$bvToast.show('my-toast')
 			})
 			this.info = true
 		},
@@ -194,16 +242,42 @@ export default {
 				}).then(response => {
 				console.log(response)
 				console.log('Berhasil Checkout Keranjang!')
-				this.$router.push('/user/transaction')
+				
+				// Buat Toast
+        		this.toastVariant = 'success'
+        		this.toastTitle = 'Berhasil!'
+        		this.toastMessage = response.data.message
+        		this.$bvToast.show('my-toast')
+				setTimeout(() => {
+					this.$router.push('/transaction')
+				}, 2000);
 			}).catch(error => {
 				console.log(error.response);
+
+				// Buat Toast
+        		this.toastVariant = 'danger'
+        		this.toastTitle = 'Terdapat Kesalahan!'
+        		this.toastMessage = error.response.data.message
+        		this.$bvToast.show('my-toast')
 			})
 		},
 			
 	},
-	mounted() {
+	computed: {
+        countdown(){
+            return this.count.format('s');
+        }
+    },
+  	mounted() {
+  	  	var timer = setInterval(() => {
+  	  	    this.count = moment(this.count.add(1, 'seconds'));
+  	  	    if(this.count.diff(moment(0)) === 10){
+  	  	      	clearInterval(timer);
+  	  	    }
+  	  	}, 1000);
+
 		this.getCart()
-	}
+  	},
 }
 </script>
 
