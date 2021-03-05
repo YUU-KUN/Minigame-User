@@ -27,27 +27,30 @@
                                             <tr v-for="(transaction, index) in userTransaction" :key="index">
                                                 <td>{{index+1}}</td>
                                                 <td>
-                                                  <span v-if="transaction.user">{{transaction.user}}</span>
+                                                  <span v-if="transaction.userData">
+                                                    <!-- <span v-for="(members, index) in transaction.userData" :key="index">{{members}}</span> -->
+                                                    <span>{{transaction.userData.name}}</span>
+                                                  </span>
                                                   <span v-else>-</span>
                                                 </td>
                                                 <td>
                                                   <ul>
-                                                    <span v-for="(items, index) in transaction.items" :key="index"><li>{{items.cartGameData.title}}</li></span>
+                                                    <span v-for="(items, index) in transaction.transactionItems" :key="index"><li>{{items.gameData.gameTitle}}</li></span>
                                                   </ul>
                                                 </td>
-                                                <td>{{transaction.total | rupiah}}</td>
+                                                <td>{{transaction.transactionTotal | rupiah}}</td>
                                                 <td>
-                                                  <span v-if="transaction.status == 0">Menunggu Bukti Pembayaran</span>
-                                                  <span v-else-if="transaction.status == 1">Transaksi Terkonfirmasi</span>
-                                                  <span v-else-if="transaction.status == 2">Menunggu Konfirmasi Admin</span>
-                                                  <span v-else-if="transaction.status == 3">Transaksi Ditolak</span>
+                                                  <span v-if="transaction.transactionStatus == 0">Menunggu Bukti Pembayaran</span>
+                                                  <span v-else-if="transaction.transactionStatus == 1">Transaksi Terkonfirmasi</span>
+                                                  <span v-else-if="transaction.transactionStatus == 2">Menunggu Konfirmasi Admin</span>
+                                                  <span v-else-if="transaction.transactionStatus == 3">Transaksi Ditolak</span>
                                                   <span v-else>Transaksi Kadaluarsa</span>
                                                 </td>
                                                 <td>
-                                                    <span class="d-flex justify-content-center" v-if="transaction.status ==  1 || transaction.status == 2 || transaction.status == 3">
-                                                      <a :href="transaction.buktiPembayaran" target="_blank"><span class="badge badge-success">Lihat Bukti Pembayaran</span></a>
+                                                    <span class="d-flex justify-content-center" v-if="transaction.transactionStatus ==  1 || transaction.transactionStatus == 2 || transaction.transactionStatus == 3">
+                                                      <a :href="transaction.transactionImage.url" target="_blank"><span class="badge badge-success">Lihat Bukti Pembayaran</span></a>
                                                     </span>
-                                                    <span class="d-flex justify-content-center" v-else-if="transaction.status == 0">
+                                                    <span class="d-flex justify-content-center" v-else-if="transaction.transactionStatus == 0">
                                                       <a href="" data-fancybox :data-src="'#bukti'+index"><span class="badge badge-warning">Upload Bukti Pembayaran</span></a>
                                                     </span>
                                                     <span v-else class="d-flex justify-content-center">
@@ -71,7 +74,8 @@
                                                   <h2>Hello!</h2>
                                                   <p>Silahkan upload bukti pembayarannya ya~</p>
                                                     <div class="form-group" >
-                                                      <input type="file" id="buktiPembayaran" name="buktiPembayaran" class="form-control" accept="image/*" @change="onFileSelected" required>
+                                                      <!-- <input type="file" ref="bukti" id="buktiPembayaran" name="buktiPembayaran" class="form-control" accept="image/*" @change="onFileSelected" required> -->
+                                                      <input type="file" id="image" name="image" ref="image" class="form-control" accept="image/*" @change="onFileSelected">
                                                     </div>
                                                     <button @click="uploadPayment(index)" type="button" data-fancybox-close class="btn btn-success mb-4 form-control">Checkout!</button>
                                                 </div>
@@ -85,7 +89,7 @@
             </div>
 
             <!-- ONLY FOR DEVELOPING -->
-              <!-- <div class="card bg-light">
+              <div class="card bg-light">
                 <div class="card-header"> <h3>List Transaksi User</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -94,7 +98,7 @@
                       </div>
                     </div>
                 </div>
-              </div> -->
+              </div>
               <!-- ONLY FOR DEVELOPING -->
 
               <!-- Toast di pojok kanan atas -->
@@ -150,31 +154,43 @@ export default {
     },
     methods: {
         getUserTransaction() {
-            this.axios.get('/transaction/user').then(response => {
+            this.axios.get('transaction/list/user').then(response => {
                 this.userTransaction = response.data.data.reverse()
             })
         },
 
         onFileSelected(event) {
-            this.buktiPembayaran = event.target.files[0]
-            console.log(this.buktiPembayaran);
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            this.buktiPembayaran = e.target.result
+          }
+            // const image = this.$refs.image.files[0]
+          const buktiPembayaran = event.target.files[0]
+          reader.readAsDataURL(buktiPembayaran)
+          console.log(this.buktiPembayaran);
+          
+            // this.buktiPembayaran = event.target.files[0]
+            // console.log(this.buktiPembayaran);
 
-            this.posterUrl = URL.createObjectURL(this.buktiPembayaran)
-            console.log('urlnya: '+this.posterUrl);
+            // this.posterUrl = URL.createObjectURL(this.buktiPembayaran)
+            // console.log('urlnya: '+this.posterUrl);
         },
 
         uploadPayment(index) {
           this.count = moment(0)
           let headers = {
                 'headers': {
-                    'Content-Type' : 'multipart/form-data',
+                    'Content-Type' : 'application/json',
                 },
             }
-          let transactionID = this.userTransaction[index].transaksiId
-          let formData = new FormData();
-          formData.append('file', this.buktiPembayaran); 
+          let transactionID = this.userTransaction[index].transactionId
+          const dataBukti = {
+            image: this.buktiPembayaran
+          }
+          // let formData = new FormData();
+          // formData.append('file', this.buktiPembayaran); 
 
-          this.axios.put('transaction/upload-bukti/'+transactionID, formData, headers).then(response => {
+          this.axios.put('transaction/upload/'+transactionID, dataBukti).then(response => {
             console.log(response)
             // this.info = true
             // this.notif = "Bukti transaksi berhasil diupload!"
@@ -187,7 +203,7 @@ export default {
 
             this.getUserTransaction()
           }).catch(error => {
-            console.log(error);
+            console.log(error.response);
             
             // Buat Toast
         		this.toastVariant = 'danger'

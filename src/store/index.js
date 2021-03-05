@@ -50,7 +50,7 @@ export default new Vuex.Store({
 	                localStorage.setItem('Authorization', token)
 	                axios.defaults.headers.common['Authorization'] = token
 					setTimeout(resolve(response), 3000)
-	                // resolve(response)
+	                resolve(response)
 
 				// 	const token = response.data.data.accessToken
 	            //     localStorage.setItem('Authorization', token)
@@ -83,7 +83,7 @@ export default new Vuex.Store({
 	                const logged = response.data.logged
 	                localStorage.setItem('Authorization', token)
 	                // Add the following line:
-	                axios.defaults.headers.common['Authorization'] = token
+	                axios.defaults.headers.common['Authorization'] = 'Bearer '+token
 	                commit('auth_success', token, logged)
 	                resolve(response)
 	            })

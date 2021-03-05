@@ -7,9 +7,11 @@ import axios from 'axios'
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import VueCurrency from 'vue-currency-filter'
 import moment from 'moment'
+import VueClipboard from 'vue-clipboard2'
 
 import 'bootstrap-vue/dist/bootstrap-vue.css' 
 
+Vue.use(VueClipboard)
 Vue.use(VueAxios, axios)
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
@@ -32,9 +34,9 @@ Vue.config.productionTip = false
 
 const token = localStorage.getItem('Authorization')
 if (token) {
-  Vue.prototype.$http.defaults.headers.common['Authorization'] = token
-  axios.defaults.headers.common['Authorization'] = token
-  axios.defaults.headers.common['x-access-token'] = token
+  Vue.prototype.$http.defaults.headers.common['Authorization'] = 'Bearer '+token
+  axios.defaults.headers.common['Authorization'] = 'Bearer '+token
+  // axios.defaults.headers.common['x-access-token'] = token
 } else {
   router.push('/login')
 }

@@ -20,11 +20,11 @@
 									<thead>
 										<tr>
 											<th>No.</th>
-											<th>Items</th>
+											<!-- <th>Items</th> -->
 											<th>Members</th>
 											<th>Play Date</th>
 											<th>Price</th>
-											<th>Created At</th>
+											<!-- <th>Created At</th> -->
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -33,9 +33,9 @@
 											<td>
 												<span class="d-flex justify-content-center">{{index+1}}</span>
 											</td>
-											<td>
+											<!-- <td>
 												{{cart.cartGameData.title}}
-											</td>
+											</td> -->
 											<td>
 												<span v-if="cart.members != ''">
 													<span v-for="(member, index) in cart.members" :key="index"><li>{{member.name}}</li></span>
@@ -43,21 +43,22 @@
 												<span v-else>-</span>
 											</td>
 											<td>
-												{{cart.datePlay | formatDate}}
+												{{cart.playingDate | formatDate}}
 											</td>
 											<td>
-												{{cart.price | rupiah}}
+												{{cart.itemPrice | rupiah}}
 											</td>
-											<td>
+											<!-- <td>
 												{{cart.createdAt | formatDate}}
-											</td>
+											</td> -->
 											<td class="d-flex justify-content-center">
 												<button class="btn btn-danger" data-fancybox :data-src="'#'+index" title="Delete Item"><b-icon icon="trash2-fill"></b-icon></button>
 											</td>
 
 											<div style="display:none" :id="index" class="animated-modal">
 												<h2>Watch Out!</h2>
-												<p>Are you sure wanna delete <b>{{cart.cartGameData.title}}</b>?</p>
+												<p>Are you sure wanna delete this item?</p>
+												<!-- <p>Are you sure wanna delete <b>{{cart.cartGameData.title}}</b>?</p> -->
 
 												<div class=" d-flex justify-content-center">
 													<button type="button" data-fancybox-close class="btn btn-outline-secondary col-5" style="margin: 0 5px">Cancel</button>
@@ -123,9 +124,9 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 
-			<div class="card bg-light">
+			<!-- <div class="card bg-light">
 				<div class="card-header"> 
 					<h3>Cart Item ID</h3>
 				</div>
@@ -136,7 +137,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 
 			<div class="card bg-light">
 				<div class="card-header"> 
@@ -149,7 +150,7 @@
 						</div>
 					</div>
 				</div>
-			</div> -->
+			</div>
 
 			<!-- <div class="card bg-light">
                 <div class="card-header"> <h3>Members</h3> </div>
@@ -199,7 +200,7 @@ export default {
 	},
 	methods: {
 		getCart() {
-			this.axios.get('/cart/user').then(response => {
+			this.axios.get('cart/user').then(response => {
 				this.userCart = response.data.data
 				this.cartId = response.data.data.cartId
 			})
@@ -235,10 +236,10 @@ export default {
 			this.info = true
 		},
 		checkOut() {
-			let cart = this.cartId
-			console.log(cart);
+			let cartId = this.cartId
+			console.log(cartId);
 			this.axios.post('transaction/checkout', {
-				cartId: cart
+				cartId: cartId
 				}).then(response => {
 				console.log(response)
 				console.log('Berhasil Checkout Keranjang!')

@@ -14,6 +14,12 @@
             <span>Dashboard</span>
         </router-link>
     </li>
+    <li class="nav-item">
+        <router-link to="/myGame" class="nav-link">
+            <i class="fas fa-fw fa-school"></i>
+            <span>My Game</span>
+        </router-link>
+    </li>
 
     <li class="nav-item">
         <router-link to="/transaction" class="nav-link">

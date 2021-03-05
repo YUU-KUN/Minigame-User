@@ -6,31 +6,47 @@
           <!-- <div class="col-4 d-flex justify-content-center"> -->
           <img 
             class="img-thumbnail"
-            :src="detailGame.posterUrl"
+            :src="detailGame.posterImage"
             alt="Game Image"
             height="auto"
           />
           <!-- </div> -->
         </div>
 
-        <a :href="'https://minigames.tranceformasiindonesia.com/'+detailGame.url" target="_blank" style="text-decoration: none">
+        <span v-if="detailGame.gameReady">
+          <!-- <span v-if="detailGame.canPlay"> -->
+            <span v-if="detailGame.uniqueCode">
+        <a :href="'https://minigames.tranceformasiindonesia.com/'+detailGame.gameUrl+'?token='+accessToken" target="_blank" style="text-decoration: none">
           <button
-            class="btn btn-success d-flex align-items-center justify-content-center"
+            class="btn btn-success btn-lg d-flex align-items-center justify-content-center"
             style="width: 100%; margin: 20px auto"
           >
             <b-icon icon="play-fill" font-scale="2" aria-hidden="true"></b-icon
             ><b>Play Game</b>
           </button>
         </a>
-
+        </span>
+        <!-- </span> -->
+        <span v-else>
         <button
-          class="btn btn-warning d-flex align-items-center justify-content-center"
+          class="btn btn-warning btn-lg d-flex align-items-center justify-content-center"
           style="width: 100%; margin: 20px auto"
           data-fancybox data-src="#addToCart" href="javascript:;"
         >
           <b-icon icon="cart-plus-fill" font-scale="1.4" aria-hidden="true"></b-icon
           ><b>Add to Cart</b>
         </button>
+        </span>
+        </span>
+
+        <span v-else>
+          <button
+          class="btn btn-warning btn-lg d-flex align-items-center justify-content-center"
+          style="width: 100%; margin: 20px auto"
+          disabled
+        ><b>Coming Soon</b>
+        </button>
+        </span>
       </div>
 
       <div class="col-8">
@@ -49,7 +65,7 @@
                                                   <div class="col">
                                                       <div class="input-container" style="flex-grow: 1;  ">
                                                           <h1>
-                                                            <b> {{detailGame.title}}</b>
+                                                            <b> {{detailGame.gameTitle}}</b>
                                                           </h1>
                                                       </div>
                                                   </div>
@@ -64,7 +80,7 @@
                                                             <strong>Description</strong>
                                                           </h4>
                                                           <p>
-                                                            {{detailGame.description}}
+                                                            {{detailGame.gameDescription}}
                                                           </p>
                                                       </div>
                                                   </div>
@@ -86,13 +102,20 @@
                                                               style="margin: 0 10px 0 0; font-size: 16px"
                                                               >{{category}}</span
                                                             > -->
-                                                            <span v-if="genreLength > 1">
-                                                              <span class="badge badge-pill badge-primary" v-for="(genre, index) in detailGame.genre" :key="index" style="margin: 0 10px 0 0; font-size:16px">
+                                                            <!-- <span v-if="genreLength > 1">
+                                                              <span class="badge badge-pill badge-primary" v-for="(genre, index) in detailGame.gameGenre" :key="index" style="margin: 0 10px 0 0; font-size:16px">
                                                                 {{genre}}
                                                               </span>
-                                                            </span>
-                                                            <span v-else>
+                                                            </span> -->
+                                                            <!-- <span v-else>
                                                               <span v-for="(gameSplit, index) in joinedGenre" :key="index">
+                                                                <span class="badge badge-pill badge-primary" style="margin: 0 10px 0 0; font-size:16px">
+                                                                  {{gameSplit}}
+                                                                </span>
+                                                              </span>
+                                                            </span> -->
+                                                            <span>
+                                                              <span v-for="(gameSplit, index) in detailGame.gameGenre" :key="index">
                                                                 <span class="badge badge-pill badge-primary" style="margin: 0 10px 0 0; font-size:16px">
                                                                   {{gameSplit}}
                                                                 </span>
@@ -117,8 +140,8 @@
                                                               </h4>
                                                               <br />
                                                               <div class="col-12">
-                                                                <div class="row" v-if="detailGame.rating">
-                                                                  <b-icon v-for="index in detailGame.rating" :key="index" class="h5 mb-2" icon="star-fill" style="color: orange"></b-icon>
+                                                                <div class="row" v-if="detailGame.gameRating">
+                                                                  <b-icon v-for="index in detailGame.gameRating" :key="index" class="h5 mb-2" icon="star-fill" style="color: orange"></b-icon>
                                                                 </div>
                                                                 <div class="row" v-else>
                                                                   <span>-</span>
@@ -140,7 +163,7 @@
                                                               <div class="col-12">
                                                                 <div class="row">
                                                                   <b-icon class="h5 mb-2" icon="stopwatch-fill" style="color: orange"></b-icon>
-                                                                  {{detailGame.duration}} Minutes
+                                                                  {{detailGame.gameDuration}} Minutes
                                                                 </div>
                                                               </div>
                                                             </div>
@@ -164,7 +187,7 @@
                                                               <div class="col-12">
                                                                 <div class="row">
                                                                   <b-icon class="h5 " icon="cash" style="color: orange"></b-icon>
-                                                                  {{detailGame.price | rupiah}}
+                                                                  {{detailGame.gamePriceAfterDiscount | rupiah}}
                                                                 </div>
                                                               </div>
                                                             </div>
@@ -183,7 +206,7 @@
                                                               <div class="col-12">
                                                                 <div class="row">
                                                                   <b-icon class="h5 mb-2" icon="people-fill" style="color: orange"></b-icon> 
-                                                                  {{detailGame.capacity}} People
+                                                                  {{detailGame.gameCapacity}} People
                                                                 </div>
                                                               </div>
                                                             </div>
@@ -292,7 +315,7 @@
                 </div>
               </div> -->
 
-              <!-- <div class="card bg-light">
+              <div class="card bg-light">
                 <div class="card-header"> <h3>Detail Game</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -301,9 +324,9 @@
                       </div>
                     </div>
                 </div>
-              </div> -->
+              </div>
               
-        <!-- <div class="card bg-light">
+        <div class="card bg-light">
                 <div class="card-header"> <h3>All Users</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -312,7 +335,7 @@
                       </div>
                     </div>
                 </div>
-              </div> -->
+              </div>
 
         
               
@@ -423,10 +446,11 @@ export default {
 
   data() {
     return {
+      gameId: this.$route.params.gameId,
+      accessToken: '',
       detailGame: '',
-      genreLength: '',
       joinedGenre: '',
-      gameId: '',
+      // genreLength: '',
       dateTime: '',
       date: '',
       time: '',
@@ -452,35 +476,27 @@ export default {
   },
   methods: {
     getUsers() {
-      this.axios.get('/user/list').then(response => {
+      this.axios.get('/user/list-web').then(response => {
         this.users = response.data.data
       })
     // this.currentUser = this.$route.params.currentUser
     },
     getDetailGame() {
-      this.axios.get('/game/detail/'+this.gameId).then(response => {
-        this.detailGame = response.data.data,
-        this.genreLength = this.detailGame.genre.length,
-        this.joinedGenre = this.detailGame.genre.join(',').split(',')
+      this.axios.get('game/web/detail/'+this.gameId).then(response => {
+        this.detailGame = response.data.data
+        // this.genreLength = this.detailGame.gameGenre.length
+        this.joinedGenre = this.detailGame.genre
       })
     },
     addToCart() {
-      console.log(this.gameId);
+      console.log(this.gameId); 
       for (let i = 0; i < this.members.length; i++) {
-        
-          // this.gameMembersName = this.members[i].name;
-          // this.gameMembersId = this.members[i].userId;
-          this.gameMembers[i] = 
-            {
-              name: this.members[i].name,
-              userId: this.members[i].userId,
-            }
-
+          this.gameMembers[i] = this.members[i].userId
+            // {
+            //   name: this.members[i].name,
+            //   userId: this.members[i].userId,
+            // }
       }
-      // for (let i = 0; i < this.members.length; i++) {
-      //   const gameMembersName = this.members[i].name
-      //   const gameMembersId = this.members[i].userId
-      // }
       this.count = moment(0)
       let headers = {
                 "headers": {
@@ -488,8 +504,9 @@ export default {
                 },
             }
       this.axios.post('/cart/add', {
-        dateTime: this.date,
         gameId: this.gameId,
+        playDate: this.date,
+        time: this.time,
         members: this.gameMembers,
           // { 
           //   name: 'Halo Gan',
@@ -499,7 +516,6 @@ export default {
           //   name: this.gameMembersName,
           //   userId: this.gameMembersId,
           // }
-        time: this.time
       },headers).then(response => {
         console.log(response)
         console.log('Berhasil Menambahkan ke Cart')
@@ -529,6 +545,7 @@ export default {
     },
   mounted() {
     this.gameId = this.$route.params.gameId
+    this.accessToken = localStorage.getItem('Authorization')
     this.getDetailGame()
     this.getUsers()
 
