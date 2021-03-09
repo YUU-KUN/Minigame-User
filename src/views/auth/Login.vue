@@ -1,10 +1,10 @@
 <template>
 <div class="row" id="ioginPanel">
         <div class="col-8"></div>
-        <div class="col" style="background: white; right: 0; opacity: 0.85; height: 100%">
+        <div class="col" style="background: white; right: 0; height: 100%">
             <div class="row d-flex justify-content-center" style="padding: 0 10px; height: 100% ">
                 <form @submit.prevent="login">
-                    <div class="row d-flex justify-content-center">
+                    <div class="row d-flex justify-content-center" >
                         <h2 style="text-align:center;">
                             Hi there!
                             <br>
@@ -26,12 +26,17 @@
                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
                         <div class="d-flex justify-content-between">
                             <label class="form-check-label" for="exampleCheck1">Remember Me</label>
-                            <label class="form-check-label"><a href="">Forgot You Password?</a></label>
+                            <label class="form-check-label"><a href="" style="text-decoration:none">Forgot You Password?</a></label>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="width:100%; margin:10px auto">Login</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="width:100%; margin:10px auto">
+                        <span v-if="loading" class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span>
+                        <span v-else>Sign In</span>
+                    </button>
                     <div class="row d-flex justify-content-center" style="text-align:center;">
-                        <span>Doesn't have account? <a href="">Sign up</a></span>
+                        <span>Don't have an account? 
+                            <router-link to="register" style="text-decoration:none"><b>Sign up now!</b></router-link>
+                        </span>
                     </div>
                 </form>
             </div>
@@ -64,11 +69,14 @@ export default {
             date: moment(0),
             toastTitle: '',
             toastMessage: '',
-            toastVariant: ''
+            toastVariant: '',
+
+            loading: false,
         }
     },
     methods: {
         login() {   
+            this.loading = true
             this.date = moment(0)
             let email = this.email 
             let password = this.password
@@ -82,9 +90,11 @@ export default {
 
                 setTimeout(() => {
                     this.$router.push('/')
-                }, 2000);
+                }, 2000)
+                this.loading = false
             })
             .catch(err => {
+                    this.loading = false
                     this.$bvToast.show('my-toast')
                     this.toastVariant = 'danger'
                     this.toastTitle = 'Terdapat Kesalahan'
@@ -126,9 +136,9 @@ export default {
     body {
         width: 100%;
         height: 100%;
-        background-image: url('../../../public/admin/img/bg-login.jpg');
+        background-image: url('../../../public/admin/img/bg-login.png');
         background-repeat: no-repeat;
-        background-size: cover
+        background-size: cover;
     }
     #ioginPanel {
         position: absolute;
@@ -146,19 +156,12 @@ export default {
         text-decoration: none;
     }
 
-/* show / hide password */
+    /* show / hide password */
     .field-icon {
-        /* float: right;
-        margin-left: -40px;
-        margin-top: -30px;
-        position: relative;
-        z-index: 2; */
-
         float: right; 
         margin-left: -25px; 
         margin-right: 25px; 
         margin-top: -35px; 
-        /* margin-bottom: 25px;  */
         position: relative; 
         z-index: 2;
     }

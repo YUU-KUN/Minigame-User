@@ -27,7 +27,7 @@ Vue.use(VueCurrency, {
 })
 Vue.filter('formatDate', function(value) {
   if (value) {
-    return moment(String(value)).format('D MMM YYYY hh:mm')
+    return moment(String(value)).locale('id').format('D MMM YYYY hh:mm a') 
   }
 })
 Vue.config.productionTip = false

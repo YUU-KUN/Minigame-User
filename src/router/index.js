@@ -5,6 +5,9 @@ import store from '../store'
 
 // auth
 import Login from '../views/auth/Login'
+import Register from '../views/auth/Register'
+import ConfirmEmail from '../views/auth/ConfirmEmail'
+import getToken from '../views/auth/getToken'
 
 // layout
 import Sidebar from '../views/layouts/Sidebar'
@@ -22,9 +25,30 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    // https://minigame-infiniteroom.herokuapp.com/api/user/verify
+    // user.tranceformasiindonesia.com
+    // user.tranceformasiindonesia.com
+    path: `/verify`,
+    name: 'getToken',
+    components: { getToken: getToken },
+    meta: {
+      requiresNoAuth: true
+    }
+  },
+  {
+    path: '/emailConfirmation',
+    name: 'ConfirmEmail',
+    components: { confirmEmail: ConfirmEmail }
+  },
+  {
     path: '/login',
     name: 'Login',
-    components: {login: Login}
+    components: { auth: Login }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    components: { auth: Register }
   },
   {
     path: `/joinGame`,
@@ -34,7 +58,7 @@ const routes = [
   {
     path: '/myGame',
     name: 'MyGame',
-    components: {default: MyGame, sidebar: Sidebar},
+    components: { default: MyGame, sidebar: Sidebar },
     meta: {
       requiresAuth: true
     }
@@ -42,7 +66,7 @@ const routes = [
   {
     path: `/gameDetail/:gameId`,
     name: 'GameDetail',
-    components: {default:GameDetail, sidebar:Sidebar},
+    components: { default: GameDetail, sidebar: Sidebar },
     meta: {
       requiresAuth: true
     }
@@ -50,7 +74,7 @@ const routes = [
   {
     path: '/',
     name: 'Dashboard',
-    components: {default:Dashboard, sidebar:Sidebar},
+    components: { default: Dashboard, sidebar: Sidebar },
     meta: {
       requiresAuth: true
     }
@@ -58,7 +82,7 @@ const routes = [
   {
     path: '/transaction',
     name: 'Transaction',
-    components: {default:Transaction, sidebar:Sidebar},
+    components: { default: Transaction, sidebar: Sidebar },
     meta: {
       requiresAuth: true
     }
@@ -66,7 +90,7 @@ const routes = [
   {
     path: '/cart',
     name: 'Cart',
-    components: {default:Cart, sidebar:Sidebar},
+    components: { default: Cart, sidebar: Sidebar },
     meta: {
       requiresAuth: true
     }
@@ -94,15 +118,14 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
     if (store.getters.isLoggedIn) {
       next()
       return
     }
-    next('/login') 
-  }
-  else {
-    next() 
+    next('/login')
+  } else {
+    next()
   }
 })
 

@@ -89,7 +89,7 @@
             </div>
 
             <!-- ONLY FOR DEVELOPING -->
-              <div class="card bg-light">
+              <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>List Transaksi User</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -98,7 +98,7 @@
                       </div>
                     </div>
                 </div>
-              </div>
+              </div> -->
               <!-- ONLY FOR DEVELOPING -->
 
               <!-- Toast di pojok kanan atas -->
@@ -155,7 +155,7 @@ export default {
     methods: {
         getUserTransaction() {
             this.axios.get('transaction/list/user').then(response => {
-                this.userTransaction = response.data.data.reverse()
+                this.userTransaction = response.data.data
             })
         },
 

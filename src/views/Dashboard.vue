@@ -144,7 +144,7 @@
                     </div>
                 </div>
               </div> -->
-              <div class="card bg-light">
+              <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>Web Game</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -153,7 +153,7 @@
                       </div>
                     </div>
                 </div>
-              </div>
+              </div> -->
               <!-- ONLY FOR DEVELOPING -->
 
         </div>
@@ -201,6 +201,10 @@ export default {
     this.setTimeout()
     this.getWebGame()
     // this.getCurrentUser()
+  },
+  created() {
+      const token = localStorage.getItem('Authorization')
+      this.axios.defaults.headers.common['Authorization'] = 'Bearer '+token
   }
 
 }

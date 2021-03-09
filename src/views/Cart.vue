@@ -75,7 +75,10 @@
 								</div>
 								<div class="d-flex">
 									<div class="ml-auto p-0">
-										<button type="submit" @click="checkOut" class="btn btn-success mb-4">Checkout!</button>
+										<button type="submit" @click="checkOut" class="btn btn-success mb-4">
+					                        <span v-if="loading" class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span>						
+											<span v-else>Checkout!</span>
+										</button>
 									</div>
 								</div>
 							</div>
@@ -151,17 +154,6 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- <div class="card bg-light">
-                <div class="card-header"> <h3>Members</h3> </div>
-                  <div class="card-inner">
-                    <div class="card bg-dark">
-                      <div class="card-inner bg-dark">
-                        <pre class="text-warning">{{userCart}}</pre>
-                      </div>
-                    </div>
-                </div>
-              </div> -->
 			<!-- ONLY FOR DEVELOPING -->
 
 		</div>
@@ -195,7 +187,9 @@ export default {
       		count: moment(0),
       		toastTitle: '',
       		toastMessage: '',
-      		toastVariant: ''
+      		toastVariant: '',
+
+			loading: false,
 		}
 	},
 	methods: {
@@ -212,8 +206,8 @@ export default {
 						"content-type": "application/json",
 				},
 			}
-			let deleleCartId = this.userCart.items[index].cartItemId
-			this.axios.put('/cart/remove/'+deleleCartId, headers).then(response => {
+			let itemId = this.userCart.items[index].itemId
+			this.axios.put('/cart/remove/'+itemId, headers).then(response => {
 				console.log(response)
 				console.log('Berhasil Menghapus Dari Keranjang')
 
@@ -223,6 +217,7 @@ export default {
         		this.toastMessage = response.data.message
         		this.$bvToast.show('my-toast')
 
+				this.userCart.slice(0, 1)
 				this.getCart() //auto refresh page
 			}).catch(error => {
 				console.log(error.response);
@@ -236,11 +231,13 @@ export default {
 			this.info = true
 		},
 		checkOut() {
+			this.loading = true
 			let cartId = this.cartId
 			console.log(cartId);
 			this.axios.post('transaction/checkout', {
 				cartId: cartId
 				}).then(response => {
+				this.loading = false
 				console.log(response)
 				console.log('Berhasil Checkout Keranjang!')
 				
@@ -253,6 +250,7 @@ export default {
 					this.$router.push('/transaction')
 				}, 2000);
 			}).catch(error => {
+				this.loading = false
 				console.log(error.response);
 
 				// Buat Toast

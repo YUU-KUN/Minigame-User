@@ -44,22 +44,12 @@ export default new Vuex.Store({
 			  }
 			  axios.post('/user/login', user, auth) //shorthand
 	            .then(response => {
-
 					const token = response.data.data.accessToken
 	                commit('auth_success', token)
 	                localStorage.setItem('Authorization', token)
 	                axios.defaults.headers.common['Authorization'] = token
-					setTimeout(resolve(response), 3000)
+					// setTimeout(resolve(response), 3000)
 	                resolve(response)
-
-				// 	const token = response.data.data.accessToken
-	            //     localStorage.setItem('Authorization', token)
-	            //     axios.defaults.headers.common['Authorization'] = token
-	            //     const logged = response.data
-                //   console.log(logged)
-	            //     commit('auth_success', token)
-				// 	setTimeout(resolve(response), 3000)
-	            //     resolve(response)
 	            })
 	            .catch(err => {
 					if (err.response.data[0]) {
@@ -76,20 +66,22 @@ export default new Vuex.Store({
 
 	    register({commit}, user){
 	    	return new Promise((resolve, reject) => {
+				const auth = {
+					auth: {
+						username: process.env.VUE_APP_BASIC_AUTH_USERNAME, 
+						password: process.env.VUE_APP_BASIC_AUTH_PASSWORD
+					}
+				  }
 	            commit('auth_request')
-	            axios({url: '/user/register', data: user, method: 'POST' })
+				axios.post('user/register', user, auth)
+	            // axios({url: '/user/register', data: user, method: 'POST' })
 	            .then(response => {
-	                const token = response.data.data.accessToken
-	                const logged = response.data.logged
-	                localStorage.setItem('Authorization', token)
-	                // Add the following line:
-	                axios.defaults.headers.common['Authorization'] = 'Bearer '+token
-	                commit('auth_success', token, logged)
+	                commit('auth_success')
 	                resolve(response)
 	            })
 	            .catch(err => {
 	                commit('auth_error', err)
-	                localStorage.removeItem('Authorization')
+					console.log(err.response);
 	                reject(err)
 	            })
 	        })

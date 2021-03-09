@@ -294,7 +294,17 @@
                     </div>
                 </div>
               </div> -->
-          <!-- <div class="card bg-light">
+        <div class="card bg-light">
+                <div class="card-header"> <h3>Schedule Date</h3> </div>
+                  <div class="card-inner">
+                    <div class="card bg-dark">
+                      <div class="card-inner bg-dark">
+                        <pre class="text-warning">{{date}}</pre>
+                      </div>
+                    </div>
+                </div>
+              </div>
+          <div class="card bg-light">
                 <div class="card-header"> <h3>Members</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -303,8 +313,8 @@
                       </div>
                     </div>
                 </div>
-              </div> -->
-              <!-- <div class="card bg-light">
+              </div>
+              <div class="card bg-light">
                 <div class="card-header"> <h3>GameID</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -313,9 +323,9 @@
                       </div>
                     </div>
                 </div>
-              </div> -->
+              </div>
 
-              <div class="card bg-light">
+              <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>Detail Game</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -324,9 +334,9 @@
                       </div>
                     </div>
                 </div>
-              </div>
+              </div> -->
               
-        <div class="card bg-light">
+        <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>All Users</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -335,7 +345,7 @@
                       </div>
                     </div>
                 </div>
-              </div>
+              </div> -->
 
         
               
@@ -484,12 +494,21 @@ export default {
     getDetailGame() {
       this.axios.get('game/web/detail/'+this.gameId).then(response => {
         this.detailGame = response.data.data
-        // this.genreLength = this.detailGame.gameGenre.length
         this.joinedGenre = this.detailGame.genre
       })
     },
     addToCart() {
-      console.log(this.gameId); 
+      console.log(this.gameId);
+
+      var now = new Date();
+      // this.date = now.toISOString()
+      // this.date = Date.toISOString()
+      // var dateobject = moment(this.date, DATETIME_LOCAL_SECONDS)
+      // this.date = new Date(dateobject .toISOString());
+      // this.date = this.date+new Date().toISOString().split(moment().format('YYYY-MM-DD'))[1]
+
+      console.log(this.date);
+
       for (let i = 0; i < this.members.length; i++) {
           this.gameMembers[i] = this.members[i].userId
             // {
@@ -508,17 +527,10 @@ export default {
         playDate: this.date,
         time: this.time,
         members: this.gameMembers,
-          // { 
-          //   name: 'Halo Gan',
-          //   userId: 'Ini User Id',
-          // },
-          // { 
-          //   name: this.gameMembersName,
-          //   userId: this.gameMembersId,
-          // }
       },headers).then(response => {
         console.log(response)
         console.log('Berhasil Menambahkan ke Cart')
+
         // Buat Toast
         this.toastVariant = 'success'
         this.toastTitle = 'Berhasil!'
@@ -526,6 +538,7 @@ export default {
         this.$bvToast.show('my-toast')
       }).catch(error => {
         console.log(error.response);
+
         // Buat Toast
         this.$bvToast.show('my-toast')
         this.toastVariant = 'danger'
@@ -533,10 +546,6 @@ export default {
         this.toastMessage = error.response.data.message;
       })
     },
-    // getUserId() {
-    //   this.axios.get('')
-    // },
-    
   },
   computed: {
         countdown(){

@@ -41,13 +41,16 @@
                           <span v-if="!game.gameDiscount" ><h5><b>{{game.gamePrice | rupiah}}</b></h5></span>
                           <span v-else><span style="text-decoration: line-through;">{{game.gamePrice | rupiah}}</span>&nbsp;	<span style="margin: 0 10px" ><h5><b>{{game.gamePriceAfterDiscount | rupiah}}</b>&nbsp;</h5><span style="color:red"><h5><b>{{game.gameDiscount}}% OFF!</b></h5></span></span> </span>
                       </div>
+                      <div class="row">
+                        <span>Playing Time: {{game.playingSchedule | formatDate}}</span>
+                      </div>
                       <br>
                       <div class="row">
                           <span v-if="game.gameReady">
                               <div class="row">
                               <div class="col">
                             <a :href="'https://minigames.tranceformasiindonesia.com/'+game.gameUrl+'?token='+accessToken" target="_blank" style="text-decoration: none">
-                                <button  @click="getDetailGame(index)" class="btn btn-success d-flex align-items-center">
+                                <button class="btn btn-success d-flex align-items-center">
                                   <b>Play Game</b>
                                 </button>
                             </a>
