@@ -20,11 +20,9 @@
 									<thead>
 										<tr>
 											<th>No.</th>
-											<!-- <th>Items</th> -->
 											<th>Members</th>
 											<th>Play Date</th>
 											<th>Price</th>
-											<!-- <th>Created At</th> -->
 											<th>Action</th>
 										</tr>
 									</thead>
@@ -33,9 +31,6 @@
 											<td>
 												<span class="d-flex justify-content-center">{{index+1}}</span>
 											</td>
-											<!-- <td>
-												{{cart.cartGameData.title}}
-											</td> -->
 											<td>
 												<span v-if="cart.members != ''">
 													<span v-for="(member, index) in cart.members" :key="index"><li>{{member.name}}</li></span>
@@ -43,23 +38,18 @@
 												<span v-else>-</span>
 											</td>
 											<td>
-												{{cart.playingDate | formatDate}}
+												{{cart.playingDate | dateOnly}}
 											</td>
 											<td>
 												{{cart.itemPrice | rupiah}}
 											</td>
-											<!-- <td>
-												{{cart.createdAt | formatDate}}
-											</td> -->
-											<td class="d-flex justify-content-center">
+											<td>
 												<button class="btn btn-danger" data-fancybox :data-src="'#'+index" title="Delete Item"><b-icon icon="trash2-fill"></b-icon></button>
 											</td>
 
 											<div style="display:none" :id="index" class="animated-modal">
 												<h2>Watch Out!</h2>
 												<p>Are you sure wanna delete this item?</p>
-												<!-- <p>Are you sure wanna delete <b>{{cart.cartGameData.title}}</b>?</p> -->
-
 												<div class=" d-flex justify-content-center">
 													<button type="button" data-fancybox-close class="btn btn-outline-secondary col-5" style="margin: 0 5px">Cancel</button>
 													<button type="button" @click="deleteCart(index)" data-fancybox-close class="btn btn-danger col-5 " style="margin: 0 5px">YASHH!</button>
@@ -86,34 +76,6 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- CANNOT IMPLEMENT THIS TOAST HERE -->
-			<!-- <div style="display: none;" id="uploadPayment" class="animated-modal">
-				<h2>Hello!</h2>
-				<p>Silahkan upload bukti pembayarannya ya~</p>
-				<form @submit="checkOut" enctype="multipart/form-data">
-					<div class="form-group" >
-						<input type="file" accept="image/*" class="form-control-file" required>
-					</div>
-					<button type="submit" data-fancybox-close class="btn btn-success mb-4 form-control">Checkout!</button>
-				</form>
-			</div> -->
-
-			<!-- <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-				<div class="toast" style="position: absolute; top: 0; right: 0;">
-					<div class="toast-header">
-						<img src="" class="rounded mr-2" alt="...">
-						<strong class="mr-auto">Bootstrap</strong>
-						<small>11 mins ago</small>
-						<button @click="info == false" type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="toast-body">
-						User berhasil terhapus
-					</div>
-				</div>
-			</div> -->
 
 			<!-- ONLY FOR DEVELOPING -->
 			<!-- <div class="card bg-light">
@@ -142,7 +104,7 @@
 				</div>
 			</div> -->
 
-			<div class="card bg-light">
+			<!-- <div class="card bg-light">
 				<div class="card-header"> 
 					<h3>List Cart User</h3> 
 				</div>
@@ -153,7 +115,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<!-- ONLY FOR DEVELOPING -->
 
 		</div>
@@ -210,6 +172,7 @@ export default {
 			this.axios.put('/cart/remove/'+itemId, headers).then(response => {
 				console.log(response)
 				console.log('Berhasil Menghapus Dari Keranjang')
+				this.getCart()
 
 				// Buat Toast
         		this.toastVariant = 'warning'
@@ -217,15 +180,13 @@ export default {
         		this.toastMessage = response.data.message
         		this.$bvToast.show('my-toast')
 
-				this.userCart.slice(0, 1)
-				this.getCart() //auto refresh page
 			}).catch(error => {
-				console.log(error.response);
+				console.log(error);
 
 				// Buat Toast
         		this.toastVariant = 'danger'
         		this.toastTitle = 'Terdapat Kesalahan!'
-        		this.toastMessage = error.response.data.message
+        		this.toastMessage = 'Kesalahan ketika menghapus item cart'
         		this.$bvToast.show('my-toast')
 			})
 			this.info = true

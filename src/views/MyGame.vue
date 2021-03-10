@@ -4,7 +4,6 @@
         <div class="col-md-12">
             <div class="card shadow mb-4" >
               <div class="row" v-for="(game, index) in myGame" :key="index" style="margin: 10px 0">
-                
                   <div class="col-4 d-flex justify-content-center">
                     <img v-if="game.gameReady" @click="getDetailGame(index)" :src="game.posterImage" alt="Game Image" height="200px" style="border-radius:5px" id="imageHover" class="img-thumbnail">
                     <img v-else :src="game.posterImage" alt="Game Image" height="200px" style="border-radius:5px; cursor: not-allowed" class="img-thumbnail">
@@ -42,7 +41,7 @@
                           <span v-else><span style="text-decoration: line-through;">{{game.gamePrice | rupiah}}</span>&nbsp;	<span style="margin: 0 10px" ><h5><b>{{game.gamePriceAfterDiscount | rupiah}}</b>&nbsp;</h5><span style="color:red"><h5><b>{{game.gameDiscount}}% OFF!</b></h5></span></span> </span>
                       </div>
                       <div class="row">
-                        <span>Playing Time: {{game.playingSchedule | formatDate}}</span>
+                        <span>Playing Time: {{game.playingSchedule | dateOnly }} pukul {{game.timeStart}}.00 - {{Math.round(game.timeEnd)}}.00</span>
                       </div>
                       <br>
                       <div class="row">
@@ -69,35 +68,18 @@
                           <div style="display: none;" id="code" class="animated-modal">
                             <h2>Hello!</h2>
                             <p>This is your Code!</p>
-                            <button class="btn btn-success"><b>{{code}}</b></button>
-                            <button id="copyButton" class="btn btn-outline-primary" @click="copyText"><b-icon icon="files"></b-icon></button>
+                            <button class="btn btn-outline-success btn-block" @click="copyText"><b>{{code}}</b></button>
+                            <!-- <button id="copyButton" class="btn btn-outline-primary" @click="copyText"><b-icon icon="files"></b-icon></button> -->
                         </div>
                       </div>
                     </div>
                   </div>
-
-                  <!-- <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-                    <div class="toast" style="position: absolute; top: 0; right: 0;">
-                      <div class="toast-header">
-                        <img src="" class="rounded mr-2" alt="...">
-                        <strong class="mr-auto">Bootstrap</strong>
-                        <small>11 mins ago</small>
-                        <button @click="info == false" type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="toast-body">
-                        Welcome {{user.username}}
-                      </div>
-                    </div>
-                  </div> -->
-                <!-- </div> -->
               </div>
             </div>
 
 
             <!-- ONLY FOR DEVELOPING -->
-              <div class="card bg-light">
+              <!-- <div class="card bg-light">
                 <div class="card-header"> <h3>My Game</h3> </div>
                   <div class="card-inner">
                     <div class="card bg-dark">
@@ -106,7 +88,7 @@
                       </div>
                     </div>
                 </div>
-              </div>
+              </div> -->
               <!-- ONLY FOR DEVELOPING -->
 
         </div>

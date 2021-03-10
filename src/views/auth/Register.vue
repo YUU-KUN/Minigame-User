@@ -153,7 +153,7 @@ export default {
     body {
         width: 100%;
         height: 100%;
-        background-image: url('../../../public/admin/img/bg-login.png');
+        background-image: url('../../../public/admin/img/bg-login.jpg');
         background-repeat: no-repeat;
         background-size: cover;
     }
