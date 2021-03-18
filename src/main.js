@@ -8,6 +8,7 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import VueCurrency from 'vue-currency-filter'
 import moment from 'moment'
 import VueClipboard from 'vue-clipboard2'
+import numeral from 'numeral'
 
 import 'bootstrap-vue/dist/bootstrap-vue.css' 
 
@@ -25,6 +26,11 @@ Vue.use(VueCurrency, {
   symbolSpacing: true,
   avoidEmptyDecimals: undefined,
 })
+
+Vue.filter("formatNumber", function (value) {
+    return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+});
+
 Vue.filter('formatDate', function(value) {
   if (value) {
     return moment(String(value)).locale('id').format('D MMM YYYY HH:mm') 
