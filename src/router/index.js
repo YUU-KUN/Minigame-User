@@ -19,6 +19,7 @@ import Cart from '../views/Cart'
 import GameDetail from '../views/GameDetail'
 import JoinGame from '../views/JoinGame'
 import MyGame from '../views/MyGame'
+import Leaderboard from '../views/Leaderboard'
 
 Vue.use(VueRouter)
 
@@ -54,6 +55,14 @@ const routes = [
     path: `/joinGame`,
     name: 'JoinGame',
     component: JoinGame
+  },
+  {
+    path: '/leaderboard',
+    name: 'Leaderboard',
+    components: { default: Leaderboard, sidebar: Sidebar },
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/myGame',
