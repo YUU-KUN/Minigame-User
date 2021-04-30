@@ -10,65 +10,7 @@
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
-                                <!-- <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>User</th>
-                                            <th>Item</th>
-                                            <th>Total</th>
-                                            <th>Status</th>
-                                            <th>Payment</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                            <tr v-for="(transaction, index) in userTransaction" :key="index">
-                                                <td>{{index+1}}</td>
-                                                <td>
-                                                  <span v-if="transaction.userData">
-                                                    <span>{{transaction.userData.name}}</span>
-                                                  </span>
-                                                  <span v-else>-</span>
-                                                </td>
-                                                <td>
-                                                  <ul>
-                                                    <span v-for="(items, index) in transaction.transactionItems" :key="index"><li>{{items.gameData.gameTitle}}</li></span>
-                                                  </ul>
-                                                </td>
-                                                <td>{{transaction.transactionTotal | rupiah}}</td>
-                                                <td>
-                                                  <span v-if="transaction.transactionStatus == 0">Menunggu Bukti Pembayaran</span>
-                                                  <span v-else-if="transaction.transactionStatus == 1">Transaksi Terkonfirmasi</span>
-                                                  <span v-else-if="transaction.transactionStatus == 2">Menunggu Konfirmasi Admin</span>
-                                                  <span v-else-if="transaction.transactionStatus == 3">Transaksi Ditolak</span>
-                                                  <span v-else>Transaksi Kadaluarsa</span>
-                                                </td>
-                                                <td>
-                                                    <span class="d-flex justify-content-center" v-if="transaction.transactionStatus ==  1 || transaction.transactionStatus == 2 || transaction.transactionStatus == 3">
-                                                      <a :href="transaction.transactionImage.url" target="_blank"><span class="badge badge-success">Lihat Bukti Pembayaran</span></a>
-                                                    </span>
-                                                    <span class="d-flex justify-content-center" v-else-if="transaction.transactionStatus == 0">
-                                                      <a href="" data-fancybox :data-src="'#bukti'+index"><span class="badge badge-warning">Upload Bukti Pembayaran</span></a>
-                                                    </span>
-                                                    <span v-else class="d-flex justify-content-center">
-                                                      -
-                                                    </span>
-                                                </td>
-                                                <td>{{transaction.createdAt | formatDate}}</td>
-
-                                                <div style="display: none;" :id="'bukti'+index" class="animated-modal">
-                                                  <h2>Hello!</h2>
-                                                  <p>Silahkan upload bukti pembayarannya ya~</p>
-                                                    <div class="form-group" >
-                                                      <input type="file" id="image" name="image" ref="image" class="form-control" accept="image/*" @change="onFileSelected">
-                                                    </div>
-                                                    <button @click="uploadPayment(index)" type="button" data-fancybox-close class="btn btn-success mb-4 form-control">Checkout!</button>
-                                                </div>
-                                            </tr>
-                                    </tbody>
-                                </table> -->
-
+                                
                                 <b-table
                     id="my-table"
                     class="table table-bordered"
