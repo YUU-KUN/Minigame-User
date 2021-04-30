@@ -10,7 +10,7 @@
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <!-- <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
@@ -20,7 +20,6 @@
                                             <th>Status</th>
                                             <th>Payment</th>
                                             <th>Date</th>
-                                            <!-- <th>Action</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -28,7 +27,6 @@
                                                 <td>{{index+1}}</td>
                                                 <td>
                                                   <span v-if="transaction.userData">
-                                                    <!-- <span v-for="(members, index) in transaction.userData" :key="index">{{members}}</span> -->
                                                     <span>{{transaction.userData.name}}</span>
                                                   </span>
                                                   <span v-else>-</span>
@@ -58,30 +56,86 @@
                                                     </span>
                                                 </td>
                                                 <td>{{transaction.createdAt | formatDate}}</td>
-                                                <!-- <td>
-                                                  <span v-if="transaction.status == 1" class="d-flex justify-content-center">
-                                                    <a href="" data-fancybox :data-src="'#'+index"><span class="badge badge-primary">Lihat Kode Game</span></a>
-                                                  </span>
-                                                  <span class="d-flex justify-content-center" v-else><button class="btn btn-danger" @click="deleteUserTransaction(index)" title="Delete Transaction" ><b-icon icon="trash2-fill"></b-icon></button></span>
-                                                </td> -->
-
-                                                <div style="display: none;" :id="index" class="animated-modal">
-                                                  <h2>Hello!</h2>
-                                                  <p>This is animated content! Cool, right?</p>
-                                                </div>
 
                                                 <div style="display: none;" :id="'bukti'+index" class="animated-modal">
                                                   <h2>Hello!</h2>
                                                   <p>Silahkan upload bukti pembayarannya ya~</p>
                                                     <div class="form-group" >
-                                                      <!-- <input type="file" ref="bukti" id="buktiPembayaran" name="buktiPembayaran" class="form-control" accept="image/*" @change="onFileSelected" required> -->
                                                       <input type="file" id="image" name="image" ref="image" class="form-control" accept="image/*" @change="onFileSelected">
                                                     </div>
                                                     <button @click="uploadPayment(index)" type="button" data-fancybox-close class="btn btn-success mb-4 form-control">Checkout!</button>
                                                 </div>
                                             </tr>
                                     </tbody>
-                                </table>
+                                </table> -->
+
+                                <b-table
+                    id="my-table"
+                    class="table table-bordered"
+                    :items="userTransaction"
+                    :per-page="perPage"
+                    :current-page="currentPage"
+                    :fields="fields"
+                  >
+
+                      <template v-slot:cell(no)="data">
+                          <span>{{data.index+1}}</span>
+                      </template>
+                      <template v-slot:cell(user)="data">
+                        <span v-if="data.item.userData">
+                          <span>{{data.item.userData.name}}</span>
+                        </span>
+                        <span v-else>-</span>
+                      </template>
+                      <template v-slot:cell(item)="data">
+                        <ul>
+                          <span v-for="(items, index) in data.item.transactionItems" :key="index">
+                            <li>{{items.gameData.gameTitle}}</li>
+                          </span>
+                        </ul>
+                      </template>
+                      <template v-slot:cell(total)="data">
+                        {{data.item.transactionTotal | rupiah}}
+                      </template>
+                      <template v-slot:cell(status)="data">
+                        <span v-if="data.item.transactionStatus == 0">Menunggu Bukti Pembayaran</span>
+                        <span v-else-if="data.item.transactionStatus == 1">Transaksi Terkonfirmasi</span>
+                        <span v-else-if="data.item.transactionStatus == 2">Menunggu Konfirmasi Admin</span>
+                        <span v-else-if="data.item.transactionStatus == 3">Transaksi Ditolak</span>
+                        <span v-else>Transaksi Kadaluarsa</span>
+                      </template>
+                      <template v-slot:cell(payment)="data">
+                        <span class="d-flex justify-content-center" v-if="data.item.transactionStatus ==  1 || data.item.transactionStatus == 2 || data.item.transactionStatus == 3">
+                          <a :href="data.item.transactionImage.url" target="_blank"><span class="badge badge-success">Lihat Bukti Pembayaran</span></a>
+                        </span>
+                        <span class="d-flex justify-content-center" v-else-if="data.item.transactionStatus == 0">
+                          <a href="" data-fancybox :data-src="'#bukti'+data.index"><span class="badge badge-warning">Upload Bukti Pembayaran</span></a>
+                        </span>
+                        <span v-else class="d-flex justify-content-center">
+                          -
+                        </span>
+
+                        <div style="display: none;" :id="'bukti'+data.index" class="animated-modal">
+                          <h2>Hello!</h2>
+                          <p>Silahkan upload bukti pembayarannya ya~</p>
+                            <div class="form-group" >
+                              <input type="file" id="image" name="image" ref="image" class="form-control" accept="image/*" @change="onFileSelected">
+                            </div>
+                            <button @click="uploadPayment(data.index)" type="button" data-fancybox-close class="btn btn-success mb-4 form-control">Checkout!</button>
+                        </div>
+                      </template>
+                      <template v-slot:cell(date)="data">
+                        {{data.item.createdAt | formatDate}}
+                      </template>
+                  </b-table>
+                  <br>
+                  <b-pagination
+                    v-model="currentPage"
+                    :total-rows="rows"
+                    :per-page="perPage"
+                    aria-controls="my-table"
+                    align="center"
+                  ></b-pagination>
                             </div>
                         </div>
                     </div>
@@ -139,7 +193,7 @@ import moment from 'moment'
 export default {
     data() {
         return {
-            userTransaction: '',
+            userTransaction: [],
             poster: '',
             posterUrl: '',
             buktiPembayaran: '',
@@ -149,7 +203,12 @@ export default {
       		  count: moment(0),
       		  toastTitle: '',
       		  toastMessage: '',
-      		  toastVariant: ''
+      		  toastVariant: '',
+
+            currentPage: 1,
+            perPage: 10,
+            fields: ['no', 'user', 'item', 'total', 'status', 'payment', 'date']
+
         }
     },
     methods: {
@@ -218,7 +277,10 @@ export default {
     computed: {
         countdown(){
             return this.count.format('s');
-        }
+        },
+        rows() {
+            return this.userTransaction.length
+        },
     },
     mounted() {
         var timer = setInterval(() => {

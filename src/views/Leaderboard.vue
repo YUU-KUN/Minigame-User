@@ -46,41 +46,46 @@
             <div class="row">
               <div class="col-md-12 mt-3">
                 <div class="table-responsive">
-                  <table
+                  <b-table
+                    id="my-table"
                     class="table table-bordered"
-                    id="dataTable"
-                    width="100%"
-                    cellspacing="0"
+                    :items="leaderboard"
+                    :per-page="perPage"
+                    :current-page="currentPage"
+                    :fields="fields"
                   >
-                    <thead>
-                      <tr>
-                        <th>No.</th>
-                        <th>Team Name</th>
-                        <th>Leader Name</th>
-                        <th>Game Data</th>
-                        <th>Score</th>
-                        <th>Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(leaderboard, index) in leaderboard"
-                        :key="index"
-                      >
-                        <td>{{ index + 1 }}</td>
-                        <td>
-                          <span v-if="leaderboard.teamName">
-                            <span>{{ leaderboard.teamName }}</span>
-                          </span>
-                          <span v-else>-</span>
-                        </td>
-                        <td>{{ leaderboard.leaderName }}</td>
-                        <td>{{ leaderboard.gameData.gameTitle }}</td>
-                        <td>{{ leaderboard.score | formatNumber}}</td>
-                        <td>{{ leaderboard.createdAt | formatDate }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+
+                      <template v-slot:cell(no)="data">
+                          <span>{{data.index+1}}</span>
+                      </template>
+                      <template v-slot:cell(team_name)="data">
+                        <span v-if="data.item.teamName">
+                            <span>{{ data.item.teamName }}</span>
+                        </span>
+                        <span v-else>-</span>
+                      </template>
+                      <template v-slot:cell(leader_name)="data">
+                          {{data.item.leaderName }}
+                      </template>
+                      <template v-slot:cell(game_data)="data">
+                        {{data.item.gameData.gameTitle}}
+                      </template>
+                      <template v-slot:cell(score)="data">
+                        {{data.item.score | formatNumber}}
+                      </template>
+                      <template v-slot:cell(date)="data">
+                        {{data.item.createdAt | formatDate}}
+                      </template>
+                  </b-table>
+                  <br>
+                  <b-pagination
+                    v-model="currentPage"
+                    :total-rows="rows"
+                    :per-page="perPage"
+                    aria-controls="my-table"
+                    align="center"
+                  ></b-pagination>
+
                 </div>
               </div>
             </div>
@@ -131,17 +136,20 @@
 export default {
   data() {
     return {
-      leaderboard: '',
+      leaderboard: [],
       gameId: '',
       sortlist: ['score', 'date'],
       sort: '',
       games: '',
       loading: false,
+      currentPage: 1,
+      perPage: 10,
+      fields: ['no', 'team_name', 'leader_name', 'game_data', 'score', 'date']
     };
   },
   methods: {
     getGames() {
-      this.axios.get("game/mygame").then((response) => {
+      this.axios.get("game/web/list").then((response) => {
         this.games = response.data.data;
         this.gameId = this.games[0].gameId
         this.sort = this.sortlist[0]
@@ -154,6 +162,9 @@ export default {
     this.getGames();
   },
   computed: {
+    rows() {
+        return this.leaderboard.length
+    },
     getLeaderboard() {
       this.loading = true
 
