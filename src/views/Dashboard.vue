@@ -113,11 +113,11 @@ export default {
     }
   },
   methods: {
-    getCurrentUser() {
-      this.axios.get('user/profile').then(response => {
-        this.currentUser = response.data.data
-      })
-    },
+    // getCurrentUser() {
+    //   this.axios.get('user/profile').then(response => {
+    //     this.currentUser = response.data.data
+    //   })
+    // },
     getWebGame() {
       this.axios.get('/game/web/list').then(response => {
         this.gameweb = response.data.data
@@ -135,7 +135,7 @@ export default {
     },
     setTimeout() {
       setTimeout(this.getWebGame(), 2000)
-      setTimeout(this.getCurrentUser(), 2000)
+      // setTimeout(this.getCurrentUser(), 2000)
     }
   },
   mounted() {

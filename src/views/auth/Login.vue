@@ -87,10 +87,7 @@ export default {
                 this.toastMessage = 'Selamat Datang~'
                 this.toastTitle = response.data.message
                 this.$bvToast.show('my-toast')
-
-                setTimeout(() => {
-                    this.$router.push('/')
-                }, 2000)
+                this.$router.push('/')
                 this.loading = false
             })
             .catch(err => {

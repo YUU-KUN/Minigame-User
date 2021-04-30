@@ -74,7 +74,6 @@ export default new Vuex.Store({
 				  }
 	            commit('auth_request')
 				axios.post('user/register', user, auth)
-	            // axios({url: '/user/register', data: user, method: 'POST' })
 	            .then(response => {
 	                commit('auth_success')
 	                resolve(response)
