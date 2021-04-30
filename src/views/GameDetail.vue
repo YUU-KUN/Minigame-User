@@ -378,10 +378,13 @@ export default {
       currentUser: 'Current User',
       members: [], //jadi list users
       chooseTime: [
+        '07:00',
         '09:00',
         '12:00',
-        '15:00',
+        '14:00',
+        '16:00',
         '19:00',
+        '21:00',
       ],
       values: [],
 
