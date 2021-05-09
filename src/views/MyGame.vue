@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card shadow mb-4">
-          <div class="row" v-if="myGame" style="text-align:center">
+          <div class="row" v-if="myGame.length == 0" style="text-align:center">
             <div class="col">
               <img
                 src="../../public/assets/icons/Astronaut-01.svg"
