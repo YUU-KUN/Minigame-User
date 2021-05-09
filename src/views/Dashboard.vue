@@ -123,6 +123,7 @@ export default {
         this.gameweb = response.data.data
       }).catch(error => {
         console.log(error.response);
+        this.$store.dispatch('logout')
       })
     },
     gameDetail(index) {
