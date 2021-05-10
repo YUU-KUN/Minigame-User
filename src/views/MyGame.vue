@@ -3,7 +3,13 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card shadow mb-4">
-          <div class="row" v-if="myGame.length == 0" style="text-align:center">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">My Games</h6>
+          </div>
+          <div class="progress" style="height: 5px;" v-if="loading">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <div class="row" v-if="myGame.length == 0 && getGame" style="text-align:center">
             <div class="col">
               <img
                 src="../../public/assets/icons/Astronaut-01.svg"
@@ -207,6 +213,8 @@
 export default {
   data() {
     return {
+      loading: false,
+      getGame: false,
       myGame: "",
       gameId: "",
       code: "",
@@ -215,8 +223,17 @@ export default {
   },
   methods: {
     getMyGame() {
+      this.loading = true
       this.axios.get("game/mygame").then((response) => {
         this.myGame = response.data.data.reverse();
+        this.loading = false
+        if (this.myGame.length == 0) {
+          this.getGame = true
+        }
+      }).catch((error) => {
+        console.log(error.response);
+        this.loading = false
+        this.getGame = false
       });
     },
     getDetailGame(index) {
