@@ -91,42 +91,7 @@
             </div>
           </div>
         </div>
-
-        <!-- ONLY FOR DEVELOPING -->
-        <!-- <div class="card bg-light">
-                <div class="card-header"> <h3>Games</h3> </div>
-                  <div class="card-inner">
-                    <div class="card bg-dark">
-                      <div class="card-inner bg-dark">
-                        <pre class="text-warning">{{games}}</pre>
-                      </div>
-                    </div>
-                </div>
-              </div> -->
-
-        <!-- <div class="card bg-light">
-                <div class="card-header"> <h3>Game ID & Sort By</h3> </div>
-                  <div class="card-inner">
-                    <div class="card bg-dark">
-                      <div class="card-inner bg-dark">
-                        <pre class="text-warning">{{gameId}} SORTED BY {{sort}}</pre>
-                      </div>
-                    </div>
-                </div>
-              </div>
-              <div class="card bg-light">
-                <div class="card-header"> <h3>Leaderboard</h3> </div>
-                  <div class="card-inner">
-                    <div class="card bg-dark">
-                      <div class="card-inner bg-dark">
-                        <pre class="text-warning">{{getLeaderboard}}</pre>
-                      </div>
-                    </div>
-                </div>
-              </div> -->
-              <span style="display: none">{{getLeaderboard}}</span>
-        <!-- {{ leaderboard }} -->
-        <!-- ONLY FOR DEVELOPING -->
+        <span style="display: none">{{getLeaderboard}}</span>
       </div>
     </div>
   </div>

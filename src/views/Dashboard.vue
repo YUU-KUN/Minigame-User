@@ -21,7 +21,6 @@
                           </span>
                         </span>
                         <span v-else>
-                            <!-- {{game.gameGenre.join(",").split(",")}} -->
                           <span v-for="(gameSplit, index) in game.gameGenre.join(',').split(',')" :key="index">
                             <span class="badge badge-pill badge-primary" style="margin: 0 10px 0 0; font-size:16px">
                               {{gameSplit}}
@@ -45,7 +44,6 @@
                       <br>
                       <div class="row">
                           <button v-if="game.gameReady" @click="gameDetail(index)" class="btn btn-warning d-flex align-items-center">
-                            <!-- <b-icon icon="play-fill" font-scale="2" aria-hidden="true"></b-icon> -->
                             <b>Detail Game</b>
                           </button>
                           <button v-else class="btn btn-warning d-flex align-items-center" disabled>
@@ -81,16 +79,6 @@
                     <div class="card bg-dark">
                       <div class="card-inner bg-dark">
                         <pre class="text-warning">{{currentUser}}</pre>
-                      </div>
-                    </div>
-                </div>
-              </div> -->
-              <!-- <div class="card bg-light">
-                <div class="card-header"> <h3>Web Game</h3> </div>
-                  <div class="card-inner">
-                    <div class="card bg-dark">
-                      <div class="card-inner bg-dark">
-                        <pre class="text-warning">{{gameweb}}</pre>
                       </div>
                     </div>
                 </div>
@@ -136,7 +124,6 @@ export default {
     },
     setTimeout() {
       setTimeout(this.getWebGame(), 2000)
-      // setTimeout(this.getCurrentUser(), 2000)
     }
   },
   mounted() {
