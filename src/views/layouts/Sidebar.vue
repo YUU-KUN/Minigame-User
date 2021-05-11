@@ -23,7 +23,7 @@
     <li class="nav-item">
         <router-link to="/myGame" class="nav-link">
             <i class="fas fa-fw fa-school"></i>
-            <span>My Game</span>
+            <span>My Games</span>
         </router-link>
     </li>
     <li class="nav-item">
