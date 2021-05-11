@@ -138,7 +138,8 @@
                   <span v-if="game.gameReady">
                     <div class="row">
                       <div class="col">
-                        <a
+                        <span v-if="playable(index)">
+                          <a
                           :href="
                             'https://minigames.tranceformasiindonesia.com/' +
                               game.gameUrl +
@@ -154,6 +155,16 @@
                             <b>Play Game</b>
                           </button>
                         </a>
+                        </span>
+                        <span v-else>
+                          <button
+                            class="btn btn-danger d-flex align-items-center"
+                            disabled
+                          >
+                            <b>Cannot Play Yet</b>
+                          </button>
+                        </span>
+                        
                       </div>
                       <div>
                         <button
@@ -184,26 +195,12 @@
                     >
                       <b>{{ code }}</b>
                     </button>
-                    <!-- <button id="copyButton" class="btn btn-outline-primary" @click="copyText"><b-icon icon="files"></b-icon></button> -->
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- ONLY FOR DEVELOPING -->
-        <!-- <div class="card bg-light">
-                <div class="card-header"> <h3>My Game</h3> </div>
-                  <div class="card-inner">
-                    <div class="card bg-dark">
-                      <div class="card-inner bg-dark">
-                        <pre class="text-warning">{{myGame}}</pre>
-                      </div>
-                    </div>
-                </div>
-              </div> -->
-        <!-- ONLY FOR DEVELOPING -->
       </div>
     </div>
   </div>
@@ -254,6 +251,15 @@ export default {
         alert(`${this.code} is copied!`),
         console.log(this.code)
       );
+    },
+    playable(index) {
+      const currentTime = new Date()
+      for (index; index < this.myGame.length; index++) {
+        if (this.myGame[index].timeStart <= currentTime.getHours()) {
+          return true
+        }
+        return false
+      }
     },
   },
   mounted() {
