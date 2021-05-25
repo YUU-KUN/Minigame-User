@@ -3,8 +3,27 @@
   <div class="row">
         <div class="col-md-12">
             <div class="card shadow mb-4" >
-              <div class="row" v-for="(game, index) in gameweb" :key="index" style="margin: 10px 0">
-                
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Dashboard</h6>
+              </div>
+              <div class="progress" style="height: 5px;" v-if="loading">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="row" v-if="!loading && gameweb.length == 0" style="text-align:center">
+                <div class="col">
+                  <img
+                    src="../../public/assets/icons/Astronaut-01.svg"
+                    class="card-img-top"
+                    alt="..."
+                    style="margin:auto; width: 300px"
+                  />
+                  <div style="margin-bottom: 50px">
+                    <h1><strong>OH NO!</strong></h1>
+                    <p>You have no transactions yet <br />Let's change that!</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row" v-for="(game, index) in gameweb" :key="index" v-else style="margin: 10px 0">
                   <div class="col-4 d-flex justify-content-center">
                     <img v-if="game.gameReady" @click="gameDetail(index)" :src="game.gameImage" alt="Game Image" height="200px" style="border-radius:5px" id="imageHover" class="img-thumbnail">
                     <img v-else :src="game.gameImage" alt="Game Image" height="200px" style="border-radius:5px; cursor: not-allowed" class="img-thumbnail">
@@ -98,6 +117,7 @@ export default {
       gameId: '',
       currentUser: '',
       totalUser: '',
+      loading: false,
     }
   },
   methods: {
@@ -107,10 +127,13 @@ export default {
     //   })
     // },
     getWebGame() {
+      this.loading = true
       this.axios.get('/game/web/list').then(response => {
         this.gameweb = response.data.data
+        this.loading = false
       }).catch(error => {
         console.log(error.response);
+        this.loading = false
         this.$store.dispatch('logout')
       })
     },

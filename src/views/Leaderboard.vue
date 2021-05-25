@@ -4,12 +4,27 @@
       <div class="col-md-12">
         <div class="card shadow mb-4">
           <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Leaderboard</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Leaderboards</h6>
           </div>
           <div class="progress" style="height: 5px;" v-if="loading">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
-          <div class="card-body">
+          {{getLeaderboard}}
+          <div class="row" v-if="(!loading && leaderboard.length == 0) && !leaderboardData" style="text-align:center">
+            <div class="col">
+              <img
+                src="../../public/assets/icons/Astronaut-01.svg"
+                class="card-img-top"
+                alt="..."
+                style="margin:auto; width: 300px"
+              />
+              <div style="margin-bottom: 50px">
+                <h1><strong>OH NO!</strong></h1>
+                <p>You have no transactions yet <br />Let's change that!</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" v-if="(!loading && leaderboard.length > 0) && leaderboardData">
             <div class="row">
               <div class="col-4">
                 <label for="selectGame">Choose Game</label>
@@ -91,7 +106,6 @@
             </div>
           </div>
         </div>
-        <span style="display: none">{{getLeaderboard}}</span>
       </div>
     </div>
   </div>
@@ -102,6 +116,7 @@ export default {
   data() {
     return {
       leaderboard: [],
+      leaderboardData: false,
       gameId: '',
       sortlist: ['score', 'date'],
       sort: '',
@@ -114,13 +129,16 @@ export default {
   },
   methods: {
     getGames() {
+      this.loading = true
       this.axios.get("game/web/list").then((response) => {
         this.games = response.data.data;
         this.gameId = this.games[0].gameId
         this.sort = this.sortlist[0]
         // localStorage.setItem("gameId", this.games[1].gameId);
         // localStorage.setItem("sort", this.sortlist[0]);
-      });
+      }).catch(error => {
+        console.log(error.response)
+      })
     },
   },
   created() {
@@ -132,7 +150,6 @@ export default {
     },
     getLeaderboard() {
       this.loading = true
-
       if (!this.gameId && !this.sort) {
         this.gameId = localStorage.getItem("gameId");
         this.sort = localStorage.getItem("sort");
@@ -140,20 +157,19 @@ export default {
       this.axios
         .get(`gameplay/leaderboard/game/${this.gameId}/sort/${this.sort}`)
         .then((response) => {
-          this.loading = false
           console.log(response.data.message);
           if (this.sort == "date") {
             this.leaderboard = response.data.data.reverse();
           } else {
             this.leaderboard = response.data.data;
           }
-        }).catch(error => {
           this.loading = false
+          this.leaderboardData = true
+        }).catch(error => {
           console.log(error);
+          this.loading = false
         }) 
     },
   },
 };
 </script>
-
-<style></style>

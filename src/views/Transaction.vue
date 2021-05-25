@@ -4,9 +4,26 @@
         <div class="col-md-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Transaksi Anda</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Transactions</h6>
                 </div>
-                <div class="card-body">
+                <div class="progress" style="height: 5px;" v-if="loading">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="row" v-if="!loading && userTransaction.length == 0" style="text-align:center">
+                  <div class="col">
+                    <img
+                      src="../../public/assets/icons/Astronaut-01.svg"
+                      class="card-img-top"
+                      alt="..."
+                      style="margin:auto; width: 300px"
+                    />
+                    <div style="margin-bottom: 50px">
+                      <h1><strong>OH NO!</strong></h1>
+                      <p>You have no transactions yet <br />Let's change that!</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body" v-if="!loading && userTransaction.length > 0">
                     <div class="row">
                         <div class="col-md-12 mt-3">
                             <div class="table-responsive">
@@ -149,14 +166,20 @@ export default {
 
             currentPage: 1,
             perPage: 10,
-            fields: ['no', 'user', 'item', 'total', 'status', 'payment', 'date']
+            fields: ['no', 'user', 'item', 'total', 'status', 'payment', 'date'],
+            loading: true
 
         }
     },
     methods: {
         getUserTransaction() {
+            this.loading = true
             this.axios.get('transaction/list/user').then(response => {
-                this.userTransaction = response.data.data
+              this.userTransaction = response.data.data
+              this.loading = false
+            }).catch(error => {
+              this.loading = false
+              console.log(error.response);
             })
         },
 

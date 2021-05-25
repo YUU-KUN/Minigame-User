@@ -14,7 +14,6 @@
         </div>
 
         <span v-if="detailGame.gameReady">
-          <!-- <span v-if="detailGame.canPlay"> -->
           <span v-if="detailGame.uniqueCode">
             <span v-if="playable">
 				<a
@@ -46,16 +45,10 @@
                 style="width: 100%; margin: 20px auto"
 				disabled
               >
-                <!-- <b-icon
-                  icon="play-fill"
-                  font-scale="2"
-                  aria-hidden="true"
-                ></b-icon> -->
 				<b>Cannot Play Yet</b>
               </button>
 			</span>
           </span>
-          <!-- </span> -->
           <span v-else>
             <button
               class="btn btn-warning btn-lg d-flex align-items-center justify-content-center"

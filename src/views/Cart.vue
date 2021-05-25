@@ -4,11 +4,28 @@
 		<div class="col-md-12">
 			<div class="card shadow mb-4">
 				<div class="card-header py-3">
-						<h6 class="m-0 font-weight-bold text-primary">Keranjang Anda</h6>
+						<h6 class="m-0 font-weight-bold text-primary">Cart</h6>
 				</div>
-				<div class="card-body">
+				<div class="progress" style="height: 5px;" v-if="loading">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+				<div class="row" v-if="!loading && userCart.items.length == 0" style="text-align:center">
+					<div class="col">
+						<img
+							src="../../public/assets/icons/Astronaut-01.svg"
+							class="card-img-top"
+							alt="..."
+							style="margin:auto; width: 300px"
+						/>
+						<div style="margin-bottom: 50px">
+							<h1><strong>OH NO!</strong></h1>
+							<p>You have no items yet <br />Let's change that!</p>
+						</div>
+					</div>
+				</div>
+		  
+				<div class="card-body" v-if="!loading && userCart.items.length > 0">
 					<div v-if="removed" class="alert alert-success alert-dismissible fade show" role="alert">
-						{{info}} 
 						<button type="button" @click="removed = false" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -76,48 +93,6 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- ONLY FOR DEVELOPING -->
-			<!-- <div class="card bg-light">
-				<div class="card-header">
-					<h3>Cart ID</h3> 
-				</div>
-				<div class="card-inner">
-					<div class="card bg-dark">
-						<div class="card-inner bg-dark">
-							<pre class="text-warning">{{cartId}}</pre>
-						</div>
-					</div>
-				</div>
-			</div> -->
-
-			<!-- <div class="card bg-light">
-				<div class="card-header"> 
-					<h3>Cart Item ID</h3>
-				</div>
-				<div class="card-inner">
-					<div class="card bg-dark">
-						<div class="card-inner bg-dark">
-							<pre class="text-warning">{{cartItemId}}</pre>
-						</div>
-					</div>
-				</div>
-			</div> -->
-
-			<!-- <div class="card bg-light">
-				<div class="card-header"> 
-					<h3>List Cart User</h3> 
-				</div>
-				<div class="card-inner">
-					<div class="card bg-dark">
-						<div class="card-inner bg-dark">
-							<pre class="text-warning">{{userCart}}</pre>
-						</div>
-					</div>
-				</div>
-			</div> -->
-			<!-- ONLY FOR DEVELOPING -->
-
 		</div>
 	</div>
 
@@ -141,7 +116,6 @@ export default {
 		return {
 			userCart: '',
 			removed: false,
-			info: false,
 			cartId: '',
 			cartItemId: '',
 
@@ -156,9 +130,15 @@ export default {
 	},
 	methods: {
 		getCart() {
+			this.loading = true
 			this.axios.get('cart/user').then(response => {
 				this.userCart = response.data.data
 				this.cartId = response.data.data.cartId
+				this.loading = false
+			}).catch(error => {
+				console.log(error.response)
+				this.loading = false
+				
 			})
 		},
 		deleteCart(index) {
@@ -189,7 +169,6 @@ export default {
         		this.toastMessage = 'Kesalahan ketika menghapus item cart'
         		this.$bvToast.show('my-toast')
 			})
-			this.info = true
 		},
 		checkOut() {
 			this.loading = true
